@@ -1,0 +1,30 @@
+name: WorkflowKeepAliveByCommit
+description: >-
+  Do a commit every "n" Days to keep actions alive
+  Adjust "n" by supplying input "Days"
+branding:
+  icon: activity
+  color: red
+inputs:
+  Days:
+    required: false
+    description: 'Number of Days between commits'
+    default: 45
+runs:
+  using: composite
+  steps:
+    - name: Update cron schedule
+      shell: sh
+      env:
+        NoOfDays: ${{ inputs.Days || 45 }}
+      run: |
+        Days=45
+        set -x on
+        set -v
+        workflow="${GITHUB_WORKFLOW_REF%%@*}"
+        workflow=".${workflow#${GITHUB_REPOSITORY}}"
+        nextDayMonth=$(date -d "now + $Days Days" +"%d %m")
+        sed -e "s/^    - cron: .* # Modified by workflow on on every run/    - cron: '0 0 $nextDayMonth *' # Modified by workflow on on every run/" $workflow
+    - name: Commit all changed files back to the repository
+      uses: stefanzweifel/git-auto-commit-action@v5
+
