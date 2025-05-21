@@ -19,9 +19,8 @@ runs:
       env:
         Days: ${{ inputs.Days || 45 }}
       run: |
-        #Days=${Days:=45}
-        set -x on
-        set -v
+        #set -x on
+        #set -v
         workflow="${GITHUB_WORKFLOW_REF%%@*}"
         workflow=".${workflow#${GITHUB_REPOSITORY}}"
         nDay=$(date -d "now + $Days Days" +%d | sed -e "s/0*//")
