@@ -1,5 +1,6 @@
 name: WorkflowKeepAliveByCommit
 description: >-
+  Keep workflows of repository alive (prevent GitHub from disabling scheduled workflows).
   Do a commit every "n" Days to keep actions alive
   Adjust "n" by supplying input "Days"
 branding:
@@ -14,7 +15,7 @@ runs:
   using: composite
   steps:
     - name: Update cron schedule
-      shell: sh
+      shell: bash
       env:
         NoOfDays: ${{ inputs.Days || 45 }}
       run: |
